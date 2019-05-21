@@ -1,0 +1,22 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kubernetes-tutorial-service
+  annotations:
+    getambassador.io/config: |
+      ---
+      apiVersion: ambassador/v1
+      kind: Mapping
+      name: kubernetes-tutorial-mapping
+      prefix: /
+      service: kubernetes-tutorial-service
+      host_rewrite: kubernetes-tutorial-service
+spec:
+  ports:
+    - port: 80
+      targetPort: 3000
+      name: http
+      protocol: TCP
+  selector:
+    app: kubernetes-tutorial-deployment

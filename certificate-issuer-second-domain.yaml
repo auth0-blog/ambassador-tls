@@ -1,0 +1,31 @@
+---
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: ClusterIssuer
+metadata:
+  name: second-domain-tk-issuer
+spec:
+  acme:
+    email: bruno.krebs@auth0.com
+    server: https://acme-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      name: second-domain-tk-issuer
+    http01: {}
+---
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: second-domain-tk-certificate
+  namespace: default
+spec:
+  secretName: second-domain-tk-cert-secret
+  issuerRef:
+    name: second-domain-tk-issuer
+    kind: ClusterIssuer
+  dnsNames:
+  - second-domain.tk
+  acme:
+    config:
+    - http01:
+        ingressClass: nginx
+      domains:
+      - second-domain.tk

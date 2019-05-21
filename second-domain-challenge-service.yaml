@@ -1,0 +1,21 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: second-domain-acme-challenge-service
+  annotations:
+    getambassador.io/config: |
+      ---
+      apiVersion: ambassador/v1
+      kind: Mapping
+      name: second-domain-acme-challenge-mapping
+      prefix: /.well-known/acme-challenge
+      rewrite: ""
+      service: second-domain-acme-challenge-service 
+spec:
+  ports:
+  - port: 80
+    targetPort: 8089
+  selector:
+    certmanager.k8s.io/acme-http-domain: "894240303"
+    certmanager.k8s.io/acme-http-token: "1107562110"

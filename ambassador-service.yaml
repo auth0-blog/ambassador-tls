@@ -1,0 +1,43 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ambassador
+  annotations:
+    getambassador.io/config: |
+      ---
+      apiVersion: ambassador/v1
+      kind: Module
+      name: tls
+      config:
+        server:
+          enabled: True
+          redirect_cleartext_from: 8080
+      ---
+      apiVersion: ambassador/v1
+      kind: TLSContext
+      name: kubernetes-tutorial-tls-context
+      hosts:
+      - kubernetes-tutorial.tk
+      secret: kubernetes-tutorial-tk-cert-secret
+      ---
+      apiVersion: ambassador/v1
+      kind: TLSContext
+      name: second-domain-tls-context
+      hosts:
+      - second-domain.tk
+      secret: second-domain-tk-cert-secret
+spec:
+  type: LoadBalancer
+  externalTrafficPolicy: Local
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 8080
+    - name: https
+      protocol: TCP
+      port: 443
+      targetPort: 8443
+  selector:
+    service: ambassador
